@@ -1,63 +1,117 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const Form = () => {
+const Form = (props) => {
+  
+  const navigate = useNavigate();
+  const [employee, setEmployee] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    age: '',
+    position: '',
+    id: '',
+  });
+
+  const onChange = (e) => {
+    setEmployee({...employee, [e.target.name]: e.target.value})
+  }
+
+    function onSubmit(e){
+      e.preventDefault();
+
+      axios 
+      .post("http://localhost:8082/api/employees', employee")
+      .then((res) => {
+        setEmployee({
+          first_name: '',
+          last_name: '',
+          email: '',
+          age: '',
+          position: '',
+          id: '',
+        });
+        // Push to /
+        navigate('/list');
+      })
+      .catch((err) => {
+        console.log('Error in Form: create Employee');
+      });
+  };
+     
   return (
-  <form className="w-full max-w-lg">
-  <div className="flex flex-wrap -mx-3 mb-6">
-    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        First Name
-      </label>
-      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
-      <p className="text-red-500 text-xs italic">Please fill out this field.</p>
+    <form onSubmit={onSubmit} className='flex flex-col top-10 relative border p-12 rounded  container mx-auto max-w-3xl'>
+     <h1 className='text-center text-cyan-900 py-3 font-semibold text-lg border-b-2 '>
+     <Link to='/' >
+              Show Employee List
+            </Link>
+      </h1> 
+    <h1 className='text-4xl py-3 font-semibold text-center'>Add Employee</h1>
+    <label className="text-lg py-2" htmlFor="firstName">First Name</label>
+    <input className='border h-9 rounded '
+        id="firstName"
+        type="text"    
+        placeholder=" Employee First name"
+        name="firstName"
+        // value={employee.first_name} to debug ..
+        onChange={onChange}
+    />
+    <label className="text-lg py-2" htmlFor="lastName">Last Name</label>
+    <input className='border h-9 rounded '
+        id="lastName"
+        placeholder=' Employee Last name'
+        type="text"
+        name="lastName"
+    //    value={employee.last_name}
+        onChange={onChange}
+    />
+    <label className="text-lg py-2" htmlFor="email">Email</label>
+    <input className='border h-9 rounded '
+        id="email"
+        placeholder=' Email'
+        type="email"
+        name="email"
+        value={employee.email}
+        onChange={onChange}
+    />
+    <label className="text-lg py-2" htmlFor="salary">Age </label>
+    <input className='border h-9 rounded '
+        id="age"
+        type="number"
+        placeholder=' Age'
+        name="age"
+        value={employee.age}
+        onChange={onChange}
+    />
+    <label className="text-lg py-2" htmlFor="position">Position</label>
+    <input className='border h-9 rounded '
+        id=" position"
+        type="text"
+        placeholder=' Company position'
+        name="position"
+        value={employee.position}
+        onChange={onChange}
+    />
+       <label className="text-lg py-2" htmlFor="salary">ID </label>
+    <input className='border h-9 rounded '
+        id="id"
+        type="number"
+        placeholder=' ID'
+        name="id"
+        value={employee.id}
+        onChange={onChange}
+    />
+    <div className='mt-8 justify-center flex '>
+        <input type="submit" value="Add"  className='border py-3  px-4 text-lg text-white bg-[#322364] rounded-md cursor-pointer '/>
+        <input className='border py-3 text-white px-4 text-lg bg-[#322364] rounded-md cursor-pointer '
+            style={{ marginLeft: '12px' }}
+            type="button"
+            value="Cancel"
+            onClick={() => (false)}
+        />
     </div>
-
-    <div className="w-full md:w-1/2 px-3">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        Last Name
-      </label>
-      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Doe" />
-    </div>
-
-  </div>
-  <div className="flex flex-wrap -mx-3 mb-6">
-    <div className="w-full px-3">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        Password
-      </label>
-      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="******************" />
-      <p className="text-gray-600 text-xs italic">Make it as long and as crazy as you'd like</p>
-    </div>
-  </div>
-  <div className="flex flex-wrap -mx-3 mb-2">
-    <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        City
-      </label>
-      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="Albuquerque" />
-    </div>
-    <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        State
-      </label>
-      <div className="relative">
-        <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
-          <option>New Mexico</option>
-          <option>Missouri</option>
-          <option>Texas</option>
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-          <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-        </div>
-      </div>
-    </div>
-    <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        Zip
-      </label>
-      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" placeholder="90210" />
-    </div>
-  </div>
 </form>
   )
 }
